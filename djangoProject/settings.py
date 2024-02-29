@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+import clickhouse_connect
 import mongoengine
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -85,6 +86,12 @@ mongoengine.connect(
     username='stats',
     password='stats'
     )
+
+clickhouse_client = clickhouse_connect.get_client(
+            host='localhost',
+            port=8123,
+            database='default'
+        )
 
 DATABASES = {
     "default": {
