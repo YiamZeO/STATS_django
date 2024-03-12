@@ -1,10 +1,9 @@
 import json
 
 from rest_framework import status, viewsets
-from rest_framework.decorators import action, api_view
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from djangoProject.settings import clickhouse_client
 from widgets.models import DegWidget
 from widgets.serializers import DegWidgetSerializer
 from widgets.services import DegDataService
@@ -74,10 +73,24 @@ class DegWidgetViewSet(viewsets.ViewSet):
 
     @action(methods=['GET'], detail=False)
     def create_from_clickhouse(self, request):
-        deg_service = DegDataService(clickhouse_client)
-        return Response(deg_service.update_deg_widgets_collection(request.GET.get('schema')))
+        schema = request.GET.get('schema')
+        if not schema:
+            return Response({'error': 'No schema provided'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(DegDataService().update_deg_widgets_collection(request.GET.get('schema')))
 
-
-@api_view(['GET'])
-def test(request):
-    return Response(True)
+    @action(methods=['GET'], detail=False)
+    def get_board_data(self, request):
+        schema = request.GET.get('schema')
+        alias = request.GET.get('alias')
+        deg_data_service = DegDataService()
+        if not schema:
+            return Response({'error': 'No schema provided'}, status=status.HTTP_400_BAD_REQUEST)
+        if alias:
+            return Response(deg_data_service.get_board_data(schema, request.GET.get('alias'), request.GET.get('date'),
+                                                            request.GET.get('extractor_code')).to_dict())
+        else:
+            res = list()
+            for widget in DegWidget.objects():
+                res.append(deg_data_service.get_board_data(schema, widget.alias, request.GET.get('date'),
+                                                           request.GET.get('extractor_code')).to_dict())
+            return Response(res)

@@ -40,7 +40,7 @@ class AdditionalExportSerializer(serializers.Serializer):
 class DegWidgetSerializer(serializers.Serializer):
     id = serializers.CharField(required=False)
     alias = serializers.CharField(error_messages={'DegWidgetSerializer error': 'alias is required'})
-    deg = serializers.CharField(error_messages={'DegWidgetSerializer error': 'deg is required'})
+    schema = serializers.CharField(error_messages={'DegWidgetSerializer error': 'schema is required'})
     order = serializers.IntegerField(error_messages={'DegWidgetSerializer error': 'order is required'})
     russian_name = serializers.CharField(required=False)
     show = serializers.BooleanField(error_messages={'DegWidgetSerializer error': 'show is required'})
@@ -68,7 +68,7 @@ class DegWidgetSerializer(serializers.Serializer):
             ret['additional_export'] = AdditionalExportSerializer(instance.additional_export).data
         else:
             ret.pop('additional_export')
-        if ret['img'] is None:
-            ret.pop('img')
+        if ret['images'] is None:
+            ret.pop('images')
         ret['type'] = instance.type.name
         return ret

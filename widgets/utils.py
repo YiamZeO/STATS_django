@@ -21,3 +21,13 @@ class Utils:
                 if row[comment_index]:
                     res[row[name_index]] = row[comment_index]
         return res
+
+
+class ResponseObject:
+    def __init__(self, data, meta=None):
+        self.data = data
+        if meta:
+            self.meta = meta
+
+    def to_dict(self):
+        return vars(self)

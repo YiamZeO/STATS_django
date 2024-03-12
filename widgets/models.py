@@ -29,7 +29,7 @@ class DegWidget(Document):
     class_name = StringField(db_field='_class', default='tech.ppr.stats.back.model.deg.DegWidget')
 
     alias = StringField(required=True)
-    deg = StringField(required=True)
+    schema = StringField(required=True, db_field='deg')
     order = IntField(required=True)
     russian_name = StringField(db_field='russianName')
     show = BooleanField(required=True)

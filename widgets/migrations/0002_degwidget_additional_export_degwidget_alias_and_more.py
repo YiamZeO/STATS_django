@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='degwidget',
-            name='img',
+            name='images',
             field=models.TextField(null=True),
         ),
         migrations.AddField(
