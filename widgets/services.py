@@ -1,5 +1,8 @@
+import io
 import logging
 from copy import copy
+
+from openpyxl.workbook import Workbook
 
 from djangoProject.settings import clickhouse_default_client
 from widgets.models import DegWidget, DegTypes, DegField
@@ -64,23 +67,25 @@ class DegDataService:
             meta_info['table_russian_name'] = deg_widget.russian_name
         return meta_info
 
-    def get_board_data(self, schema, alias, date, extractor_code):
-        # TODO Выгрузка данных из схем ДЭГ
-        board_deg_widget = DegWidget.objects(alias=alias, schema=schema, type=DegTypes.BOARD).first()
+    def get_data(self, schema, alias, deg_type, date_from, date_to, extractor_code):
+        board_deg_widget = DegWidget.objects(alias=alias, schema=schema, type=deg_type).first()
         if not board_deg_widget:
             raise Exception(f'DegWidget: schema = {schema}, alias = {alias} -- not exists')
         table_name = f'{schema}.{board_deg_widget.table_name}'
         sql = (f'{self.__select_with_fields(board_deg_widget.fields_list)} from {table_name}'
-               f'{' where date = {date: Date}' if date else ''} order by date')
+               f'{' where date between {date_from: Date} and {date_to: Date}' if date_from and date_to else ''} order by date')
         return ResponseObject(
-            self.__deg_data_extraction(sql, date, extractor_code),
+            self.__deg_data_extraction(sql, date_from, date_to, extractor_code),
             self.__get_meta(schema, alias)
         )
 
-    def __deg_data_extraction(self, sql, date, extractor_code):
+    def __deg_data_extraction(self, sql, date_from, date_to, extractor_code):
         if extractor_code == 'for_details':
             data = dict()
-            with self.__client.query_rows_stream(sql, parameters={'date': date}) as stream:
+            with self.__client.query_rows_stream(sql, parameters={
+                'date_from': date_from,
+                'date_to': date_to
+            }) as stream:
                 for column_name in stream.source.column_names:
                     if column_name != 'date':
                         data[column_name] = list()
@@ -94,7 +99,10 @@ class DegDataService:
             return data
         else:
             data = list()
-            with self.__client.query_rows_stream(sql, parameters={'date': date}) as stream:
+            with self.__client.query_rows_stream(sql, parameters={
+                'date_from': date_from,
+                'date_to': date_to
+            }) as stream:
                 for row in stream:
                     row_data = dict()
                     for i, field_value in enumerate(row):
@@ -112,3 +120,21 @@ class DegDataService:
             for field in fields[1:]:
                 sql += ', ' + field.name
         return sql
+
+    def get_deg_report(self, date_from, date_to, schema):
+        wb = Workbook()
+        ws = wb.active
+        ws.title = 'ДЭГ таблицы'
+        deg_widgets = DegWidget.objects(type=DegTypes.EXPORT, schema=schema) if schema \
+            else DegWidget.objects(type=DegTypes.EXPORT)
+        row_num = 1
+        for deg_widget in deg_widgets:
+            ws.cell(row=row_num, column=1).value = deg_widget.russian_name
+            row_num += 1
+            for column_num, field in enumerate(deg_widget.fields_list, 1):
+                ws.cell(row=row_num, column=column_num).value = field.russian_name
+            row_num += 1
+            # TODO Получение данных таблицы и заполнение документа
+            # data = self.get_data()
+            row_num += 2
+        return wb

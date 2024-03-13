@@ -1,10 +1,15 @@
+import datetime
+import io
 import json
+from urllib.parse import quote
 
+from django.http import HttpResponse
+from openpyxl.workbook import Workbook
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from widgets.models import DegWidget
+from widgets.models import DegWidget, DegTypes
 from widgets.serializers import DegWidgetSerializer
 from widgets.services import DegDataService
 
@@ -83,14 +88,31 @@ class DegWidgetViewSet(viewsets.ViewSet):
         schema = request.GET.get('schema')
         alias = request.GET.get('alias')
         deg_data_service = DegDataService()
-        if not schema:
-            return Response({'error': 'No schema provided'}, status=status.HTTP_400_BAD_REQUEST)
         if alias:
-            return Response(deg_data_service.get_board_data(schema, request.GET.get('alias'), request.GET.get('date'),
-                                                            request.GET.get('extractor_code')).to_dict())
+            if not schema:
+                return Response({'error': 'No schema provided with alias'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(deg_data_service.get_data(schema, alias, DegTypes.BOARD,
+                                                      request.GET.get('date_from'),
+                                                      request.GET.get('date_to'),
+                                                      request.GET.get('extractor_code')).to_dict())
         else:
             res = list()
-            for widget in DegWidget.objects():
-                res.append(deg_data_service.get_board_data(schema, widget.alias, request.GET.get('date'),
-                                                           request.GET.get('extractor_code')).to_dict())
+            widgets = DegWidget.objects(schema=schema) if schema else DegWidget.objects()
+            for widget in widgets:
+                res.append(deg_data_service.get_data(widget.schema, widget.alias, DegTypes.BOARD,
+                                                     request.GET.get('date_from'),
+                                                     request.GET.get('date_to'),
+                                                     request.GET.get('extractor_code')).to_dict())
             return Response(res)
+
+    @action(methods=['GET'], detail=False)
+    def get_deg_report(self, request):
+        # TODO Выгрузка отчета для таблиц ДЭГа
+        with io.BytesIO() as output:
+            DegDataService().get_deg_report(request.GET.get('date_from'), request.GET.get('date_to'),
+                                            request.GET.get('schema')).save(output)
+            output.seek(0)
+            file_name = f'ДЭГ_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx'
+            response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{quote(file_name)}'
+        return response
