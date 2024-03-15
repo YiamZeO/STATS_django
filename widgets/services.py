@@ -1,12 +1,13 @@
-import io
+import datetime
 import logging
 from copy import copy
 
+from openpyxl.styles import Font, Alignment
 from openpyxl.workbook import Workbook
 
 from djangoProject.settings import clickhouse_default_client
 from widgets.models import DegWidget, DegTypes, DegField
-from widgets.utils import Utils, ResponseObject
+from utils.utils import Utils, ResponseObject
 
 
 class DegDataService:
@@ -67,12 +68,12 @@ class DegDataService:
             meta_info['table_russian_name'] = deg_widget.russian_name
         return meta_info
 
-    def get_data(self, schema, alias, deg_type, date_from, date_to, extractor_code):
-        board_deg_widget = DegWidget.objects(alias=alias, schema=schema, type=deg_type).first()
-        if not board_deg_widget:
+    def get_data(self, schema, alias, deg_type, date_from, date_to, extractor_code=None):
+        deg_widget = DegWidget.objects(alias=alias, schema=schema, type=deg_type).first()
+        if not deg_widget:
             raise Exception(f'DegWidget: schema = {schema}, alias = {alias} -- not exists')
-        table_name = f'{schema}.{board_deg_widget.table_name}'
-        sql = (f'{self.__select_with_fields(board_deg_widget.fields_list)} from {table_name}'
+        table_name = f'{schema}.{deg_widget.table_name}'
+        sql = (f'{self.__select_with_fields(deg_widget.fields_list)} from {table_name}'
                f'{' where date between {date_from: Date} and {date_to: Date}' if date_from and date_to else ''} order by date')
         return ResponseObject(
             self.__deg_data_extraction(sql, date_from, date_to, extractor_code),
@@ -125,16 +126,44 @@ class DegDataService:
         wb = Workbook()
         ws = wb.active
         ws.title = 'ДЭГ таблицы'
+        table_name_font = Font(size=16, bold=True)
+        header_font = Font(size=12, bold=True)
+        value_font = Font(size=12, bold=False)
+        wrap_alignment = Alignment(wrap_text=True, horizontal='center', vertical='center')
         deg_widgets = DegWidget.objects(type=DegTypes.EXPORT, schema=schema) if schema \
             else DegWidget.objects(type=DegTypes.EXPORT)
         row_num = 1
         for deg_widget in deg_widgets:
-            ws.cell(row=row_num, column=1).value = deg_widget.russian_name
+            cell = ws.cell(row=row_num, column=2)
+            cell.font = table_name_font
+            cell.value = deg_widget.russian_name
+            # cell.alignment = wrap_alignment
             row_num += 1
-            for column_num, field in enumerate(deg_widget.fields_list, 1):
-                ws.cell(row=row_num, column=column_num).value = field.russian_name
+            for column_num, field in enumerate(deg_widget.fields_list, 2):
+                cell = ws.cell(row=row_num, column=column_num)
+                cell.font = header_font
+                cell.value = field.russian_name
+                cell.alignment = wrap_alignment
+                ws.column_dimensions[cell.column_letter].width = 20
             row_num += 1
-            # TODO Получение данных таблицы и заполнение документа
-            # data = self.get_data()
+            deg_widget_data = self.get_data(deg_widget.schema, deg_widget.alias, DegTypes.EXPORT, date_from, date_to)
+            data_start_row = row_num
+            for row_index, deg_row_data in enumerate(deg_widget_data.data, 1):
+                index_cell = ws.cell(row=row_num, column=1)
+                index_cell.font = header_font
+                index_cell.alignment = wrap_alignment
+                index_cell.value = row_index
+                for column_num, field in enumerate(deg_widget.fields_list, 2):
+                    cell = ws.cell(row=row_num, column=column_num)
+                    cell.font = value_font
+                    deg_cell_value = deg_row_data.get(field.name)
+                    if isinstance(deg_cell_value, float):
+                        deg_cell_value = round(deg_cell_value, 2)
+                    if isinstance(deg_cell_value, datetime.date):
+                        deg_cell_value = deg_cell_value.strftime('%d.%m.%Y')
+                    cell.value = deg_cell_value
+                    cell.alignment = wrap_alignment
+                row_num += 1
+            ws.row_dimensions.group(data_start_row, row_num - 1, hidden=False)
             row_num += 2
         return wb

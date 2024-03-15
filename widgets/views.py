@@ -107,7 +107,7 @@ class DegWidgetViewSet(viewsets.ViewSet):
 
     @action(methods=['GET'], detail=False)
     def get_deg_report(self, request):
-        # TODO Выгрузка отчета для таблиц ДЭГа
+
         with io.BytesIO() as output:
             DegDataService().get_deg_report(request.GET.get('date_from'), request.GET.get('date_to'),
                                             request.GET.get('schema')).save(output)
