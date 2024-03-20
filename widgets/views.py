@@ -81,7 +81,8 @@ class DegWidgetViewSet(viewsets.ViewSet):
         schema = request.GET.get('schema')
         if not schema:
             return Response({'error': 'No schema provided'}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(DegDataService().update_deg_widgets_collection(request.GET.get('schema')))
+        serializer = DegWidgetSerializer(DegDataService().update_deg_widgets_collection(request.GET.get('schema')), many=True)
+        return Response(serializer.data)
 
     @action(methods=['GET'], detail=False)
     def get_board_data(self, request):
@@ -96,13 +97,10 @@ class DegWidgetViewSet(viewsets.ViewSet):
                                                       request.GET.get('date_to'),
                                                       request.GET.get('extractor_code')).to_dict())
         else:
-            res = list()
             widgets = DegWidget.objects(schema=schema) if schema else DegWidget.objects()
-            for widget in widgets:
-                res.append(deg_data_service.get_data(widget.schema, widget.alias, DegTypes.BOARD,
-                                                     request.GET.get('date_from'),
-                                                     request.GET.get('date_to'),
-                                                     request.GET.get('extractor_code')).to_dict())
+            res = (deg_data_service.get_data(w.schema, w.alias, DegTypes.BOARD, request.GET.get('date_from'),
+                                             request.GET.get('date_to'), request.GET.get('extractor_code')).to_dict()
+                   for w in widgets)
             return Response(res)
 
     @action(methods=['GET'], detail=False)
@@ -113,6 +111,7 @@ class DegWidgetViewSet(viewsets.ViewSet):
                                             request.GET.get('schema')).save(output)
             output.seek(0)
             file_name = f'ДЭГ_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx'
-            response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response = HttpResponse(output.read(),
+                                    content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = f'attachment; filename*=UTF-8\'\'{quote(file_name)}'
         return response

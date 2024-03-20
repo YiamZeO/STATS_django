@@ -6,8 +6,8 @@ from openpyxl.styles import Font, Alignment
 from openpyxl.workbook import Workbook
 
 from djangoProject.settings import clickhouse_default_client
-from widgets.models import DegWidget, DegTypes, DegField
 from utils.utils import Utils, ResponseObject
+from widgets.models import DegWidget, DegTypes, DegField
 
 
 class DegDataService:
@@ -15,14 +15,13 @@ class DegDataService:
         self.__client = client
 
     def update_deg_widgets_collection(self, schema):
-        deg_widgets = list(DegWidget.objects())
+        deg_widgets = DegWidget.objects()
         deg_widget_max_order = max(deg_widgets, key=lambda deg_widget: deg_widget.order,
                                    default=DegWidget(order=1)).order
-        for ind, deg_widget in enumerate(deg_widgets):
-            deg_widgets[ind] = (deg_widget.table_name, deg_widget.type)
+        deg_widgets = [(deg_widget.table_name, deg_widget.type) for deg_widget in deg_widgets]
         current_tables = Utils.get_tables_comments(schema, self.__client)
-        ok_tables = list()
-        for table in list(current_tables):
+        new_deg_widgets = []
+        for table in current_tables:
             try:
                 if (table, DegTypes.EXPORT) not in deg_widgets or (table, DegTypes.BOARD) not in deg_widgets:
                     deg_widget_fields = list()
@@ -36,7 +35,7 @@ class DegDataService:
                         deg_widget_fields.append(deg_field)
                     deg_widget = DegWidget(
                         alias=table.replace('_', ''),
-                        deg=schema,
+                        schema=schema,
                         order=deg_widget_max_order,
                         russian_name=current_tables[table],
                         show=True,
@@ -46,23 +45,23 @@ class DegDataService:
                     if (table, DegTypes.EXPORT) not in deg_widgets:
                         deg_widget_ = copy(deg_widget)
                         deg_widget_.type = DegTypes.EXPORT
-                        deg_widget_.save()
+                        new_deg_widgets.append(deg_widget_)
                     if (table, DegTypes.BOARD) not in deg_widgets:
                         deg_widget_ = copy(deg_widget)
                         deg_widget_.type = DegTypes.BOARD
-                        deg_widget_.save()
+                        new_deg_widgets.append(deg_widget_)
                     deg_widget_max_order += 1
-                    ok_tables.append(table)
             except Exception as e:
                 logging.error(f'Table {table} not proceed. Error: {e}')
-        return ok_tables
+        if len(new_deg_widgets) > 0:
+            return DegWidget.objects().insert(new_deg_widgets)
+        else:
+            return list()
 
     @staticmethod
     def __get_meta(schema, alias):
         deg_widget = DegWidget.objects(alias=alias, schema=schema).first()
-        meta_info = dict()
-        for field in deg_widget.fields_list:
-            meta_info[field.name] = field.russian_name
+        meta_info = {field.name: field.russian_name for field in deg_widget.fields_list}
         meta_info['table_alias'] = deg_widget.alias
         if deg_widget.russian_name:
             meta_info['table_russian_name'] = deg_widget.russian_name
@@ -82,14 +81,11 @@ class DegDataService:
 
     def __deg_data_extraction(self, sql, date_from, date_to, extractor_code):
         if extractor_code == 'for_details':
-            data = dict()
             with self.__client.query_rows_stream(sql, parameters={
                 'date_from': date_from,
                 'date_to': date_to
             }) as stream:
-                for column_name in stream.source.column_names:
-                    if column_name != 'date':
-                        data[column_name] = list()
+                data = {column_name: list() for column_name in stream.source.column_names if column_name != 'date'}
                 for row in stream:
                     for i, field_value in enumerate(row):
                         if stream.source.column_names[i] != 'date':
@@ -97,19 +93,14 @@ class DegDataService:
                                 'date': row[stream.source.column_names.index('date')],
                                 'value': field_value
                             })
-            return data
+                return data
         else:
-            data = list()
             with self.__client.query_rows_stream(sql, parameters={
                 'date_from': date_from,
                 'date_to': date_to
             }) as stream:
-                for row in stream:
-                    row_data = dict()
-                    for i, field_value in enumerate(row):
-                        row_data[stream.source.column_names[i]] = field_value
-                    data.append(row_data)
-            return data
+                data = [{stream.source.column_names[i]: field_value for i, field_value in enumerate(row)} for row in stream]
+                return data
 
     @staticmethod
     def __select_with_fields(fields):
@@ -118,8 +109,9 @@ class DegDataService:
             sql += '*'
         else:
             sql += fields[0].name
-            for field in fields[1:]:
-                sql += ', ' + field.name
+            if len(fields) > 1:
+                str_fields = [f', {field.name}' for field in fields[1:]]
+                sql += ''.join(str_fields)
         return sql
 
     def get_deg_report(self, date_from, date_to, schema):

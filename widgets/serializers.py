@@ -68,7 +68,7 @@ class DegWidgetSerializer(serializers.Serializer):
             ret['additional_export'] = AdditionalExportSerializer(instance.additional_export).data
         else:
             ret.pop('additional_export')
-        if ret['images'] is None:
-            ret.pop('images')
+        if ret['img'] is None:
+            ret.pop('img')
         ret['type'] = instance.type.name
         return ret
