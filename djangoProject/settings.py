@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "widgets.apps.WidgetsConfig",
     "pets.apps.PetsConfig",
     'django_extensions',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
