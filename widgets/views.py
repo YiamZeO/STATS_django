@@ -4,7 +4,6 @@ import json
 from urllib.parse import quote
 
 from django.http import HttpResponse
-from openpyxl.workbook import Workbook
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -16,11 +15,13 @@ from widgets.services import DegDataService
 
 class DegWidgetViewSet(viewsets.ViewSet):
 
-    def list(self, request):
+    @staticmethod
+    def list(request):
         serializer = DegWidgetSerializer(DegWidget.objects(), many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
+    @staticmethod
+    def retrieve(request, pk=None):
         deg_widget = DegWidget.objects(pk=pk).first()
         if deg_widget is None:
             return Response()
@@ -28,7 +29,8 @@ class DegWidgetViewSet(viewsets.ViewSet):
             serializer = DegWidgetSerializer(deg_widget)
             return Response(serializer.data)
 
-    def create(self, request):
+    @staticmethod
+    def create(request):
         serializer = DegWidgetSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -36,7 +38,8 @@ class DegWidgetViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self, request, pk=None):
+    @staticmethod
+    def destroy(request, pk=None):
         deg_widget = DegWidget.objects(pk=pk).first()
         if deg_widget is None:
             return Response()

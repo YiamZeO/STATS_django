@@ -81,7 +81,7 @@ class PetsService:
         if all_transitions_service:
             sql = (f'''select date, sum(count) as count from {self.__schema}.pets_actions t1 join 
                    {self.__schema}.categories t2 on t1.service = t2.service 
-                   where{(' (date between {date_from:String} and {date_to:String}) and') if date_from and date_to 
+                   where{' (date between {date_from:String} and {date_to:String}) and' if date_from and date_to 
                    else ''} '''
                    'category = {category:String} group by date')
             with self.__client.query_rows_stream(sql, parameters={

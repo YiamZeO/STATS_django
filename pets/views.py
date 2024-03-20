@@ -19,16 +19,13 @@ class PetsViewSet(viewsets.ViewSet):
     def get_transitions_and_actions_data(self, request):
         if request.GET.get('category'):
             res = PetsService().get_transitions_and_actions_data(request.GET.get('date_from'),
-                                                                           request.GET.get('date_to'),
-                                                                           request.GET.get('category')).to_dict()
+                  request.GET.get('date_to'), request.GET.get('category')).to_dict()
             res['cython_c++_vector_test'] = Test().generate_and_sort_numbers(15)
             return Response(res)
         else:
             pets_service = PetsService()
             res = [pets_service.get_transitions_and_actions_data(request.GET.get('date_from'),
-                                                                 request.GET.get('date_to'),
-                                                                 category).to_dict() for category in
-                   pets_service.pets_categories().data]
+                  request.GET.get('date_to'), category).to_dict() for category in pets_service.pets_categories().data]
             for r in res:
                 r['meta']['cython_c++_vector_test'] = Test().generate_and_sort_numbers(15)
             return Response(res)

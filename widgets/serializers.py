@@ -30,8 +30,7 @@ class AdditionalExportSerializer(serializers.Serializer):
     second = serializers.CharField(required=True,
                                    error_messages={'AdditionalExportSerializer error': 'second is required'})
     db_column_name = serializers.CharField(required=True,
-                                           error_messages={'AdditionalExportSerializer error':
-                                                               'db_column_name is required'})
+                     error_messages={'AdditionalExportSerializer error':  'db_column_name is required'})
 
     def create(self, validated_data):
         return AdditionalExport(**validated_data)

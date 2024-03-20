@@ -1,7 +1,5 @@
 from enum import Enum
 
-import mongoengine
-from django.db import models
 from mongoengine import Document, EmbeddedDocument
 from mongoengine.fields import *
 
