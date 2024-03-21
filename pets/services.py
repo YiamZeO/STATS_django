@@ -5,6 +5,9 @@ from utils.utils import ResponseObject
 
 
 class PetsService:
+    """
+    Сервис для раздела "Мой Питомец"
+    """
 
     @property
     def schema(self):
@@ -15,12 +18,24 @@ class PetsService:
         self.__schema: Final = 'pets_report'
 
     def pets_categories(self):
+        """
+        Извлечение всех категорий
+        :return: все категории
+        """
+
         sql = f'select distinct category FROM {self.__schema}.categories'
         with self.__client.query_rows_stream(sql) as stream:
             categories = [row[0] for row in stream]
         return ResponseObject(categories)
 
     def visitors_data(self, date_from, date_to):
+        """
+        Извлечение данных для графика "Посетители"
+        :param date_from: начальная дата промежутка
+        :param date_to: конечная дата промежутка
+        :return: данные для графика "Посетители"
+        """
+
         sql = f'''select * from {self.__schema}.pets_visits {('where date between cast({date_from:String} as Date) '
               'and cast({date_to:String} as Date)') if date_from and date_to else ''} order by date'''
         with self.__client.query_rows_stream(sql, parameters={
@@ -49,6 +64,14 @@ class PetsService:
                                   })
 
     def get_transitions_and_actions_data(self, date_from, date_to, category):
+        """
+        Извлечение данных для графика "Переходы и действия"
+        :param date_from: начальная дата промежутка
+        :param date_to: конечная дата промежутка
+        :param category: категория
+        :return: данные для графика "Переходы и действия"
+        """
+
         all_transitions_service = 'Жизненные ситуации, всего переходов' if category == 'Жизненные ситуации' else (
             'Сведения о моих питомцах, всего переходов' if category == 'Сведения о моих питомцах' else None)
         with self.__client.query_rows_stream(f'select service from {self.__schema}.categories '

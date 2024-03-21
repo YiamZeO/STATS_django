@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,15 +9,39 @@ from pets.services import PetsService
 
 
 class PetsViewSet(viewsets.ViewSet):
+
     @action(methods=['GET'], detail=False)
+    @swagger_auto_schema(
+        operation_description='Возврат всех категорий'
+    )
     def pets_categories(self, request):
         return Response(PetsService().pets_categories().to_dict())
 
     @action(methods=['GET'], detail=False)
+    @swagger_auto_schema(
+        operation_description='Извлечение данных для графика "Посетители"',
+        manual_parameters=[
+            openapi.Parameter('date_from', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description='Дата начала промежутка'),
+            openapi.Parameter('date_to', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description='Дата конца промежутка'),
+        ],
+    )
     def visitors_data(self, request):
         return Response(PetsService().visitors_data(request.GET.get('date_from'), request.GET.get('date_to')).to_dict())
 
     @action(methods=['GET'], detail=False)
+    @swagger_auto_schema(
+        operation_description='Извлечение данных для графика "Переходы и действия"',
+        manual_parameters=[
+            openapi.Parameter('date_from', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description='Дата начала промежутка'),
+            openapi.Parameter('date_to', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description='Дата конца промежутка'),
+            openapi.Parameter('category', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                              description='Категория'),
+        ],
+    )
     def get_transitions_and_actions_data(self, request):
         if request.GET.get('category'):
             res = PetsService().get_transitions_and_actions_data(request.GET.get('date_from'),

@@ -11,10 +11,20 @@ from widgets.models import DegWidget, DegTypes, DegField
 
 
 class DegDataService:
+    """
+    Сервис для раздела ДЭГ
+    """
+
     def __init__(self, client=clickhouse_default_client):
         self.__client = client
 
     def update_deg_widgets_collection(self, schema):
+        """
+        Обновление коллекции DegWidget данными из ClickHouse
+        :param schema: схема в ClickHouse
+        :return: список добавленных DegWidget
+        """
+
         deg_widgets = DegWidget.objects()
         deg_widget_max_order = max(deg_widgets, key=lambda deg_widget: deg_widget.order,
                                    default=DegWidget(order=1)).order
@@ -60,6 +70,13 @@ class DegDataService:
 
     @staticmethod
     def __get_meta(schema, alias):
+        """
+        Формирование мета информации о DegWidget
+        :param schema: схема в ClickHouse
+        :param alias: алиас DegWidget
+        :return: мета информация о DegWidget
+        """
+
         deg_widget = DegWidget.objects(alias=alias, schema=schema).first()
         meta_info = {field.name: field.russian_name for field in deg_widget.fields_list}
         meta_info['table_alias'] = deg_widget.alias
@@ -68,6 +85,17 @@ class DegDataService:
         return meta_info
 
     def get_data(self, schema, alias, deg_type, date_from, date_to, extractor_code=None):
+        """
+        Получение данных DegWidget из ClickHouse
+        :param schema: схема в ClickHouse
+        :param alias: алиас DegWidget
+        :param deg_type: тип DegWidget
+        :param date_from: дата начала промежутка
+        :param date_to: дата конца промежутка
+        :param extractor_code: способ обработки и выгрузки данных
+        :return: данные DegWidget из ClickHouse
+        """
+
         deg_widget = DegWidget.objects(alias=alias, schema=schema, type=deg_type).first()
         if not deg_widget:
             raise Exception(f'DegWidget: schema = {schema}, alias = {alias} -- not exists')
@@ -80,6 +108,15 @@ class DegDataService:
         )
 
     def __deg_data_extraction(self, sql, date_from, date_to, extractor_code):
+        """
+        Получение данных DegWidget из ClickHouse способом, зависящим от extractor_code
+        :param sql: зарос для получения данных
+        :param date_from: дата начала промежутка
+        :param date_to: дата конца промежутка
+        :param extractor_code: способ обработки и выгрузки данных
+        :return: данные DegWidget из ClickHouse способом, зависящим от extractor_code
+        """
+
         if extractor_code == 'for_details':
             with self.__client.query_rows_stream(sql, parameters={
                 'date_from': date_from,
@@ -104,6 +141,12 @@ class DegDataService:
 
     @staticmethod
     def __select_with_fields(fields):
+        """
+        Формирование sql запроса, в зависимости от fields
+        :param fields: список полей для sql запроса
+        :return: sql запрос, в зависимости от fields
+        """
+
         sql = 'select '
         if len(fields) == 0:
             sql += '*'
@@ -115,6 +158,14 @@ class DegDataService:
         return sql
 
     def get_deg_report(self, date_from, date_to, schema):
+        """
+        Получение xlsx отчета из ClickHouse данных DegWidget
+        :param date_from: дата начала промежутка
+        :param date_to: дата конца промежутка
+        :param schema: схема в ClickHouse
+        :return: xlsx отчет из ClickHouse данных DegWidget
+        """
+
         wb = Workbook()
         ws = wb.active
         ws.title = 'ДЭГ таблицы'

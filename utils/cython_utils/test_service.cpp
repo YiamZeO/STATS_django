@@ -1506,8 +1506,8 @@ struct __pyx_obj_12test_service_Test;
  * 
  * 
  * cdef class Test:             # <<<<<<<<<<<<<<
- * 
- *     cdef vector[int] cdef_list_generator(self, int count):
+ *     """
+ *      ,    C++
  */
 struct __pyx_obj_12test_service_Test {
   PyObject_HEAD
@@ -2734,12 +2734,12 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_codeobj__10 __pyx_mstate_global->__pyx_codeobj__10
 /* #### Code section: module_code ### */
 
-/* "test_service.pyx":9
- * cdef class Test:
+/* "test_service.pyx":12
+ *     """
  * 
  *     cdef vector[int] cdef_list_generator(self, int count):             # <<<<<<<<<<<<<<
- *         cdef vector[int] c_vector
- *         cdef int i, num
+ *         """
+ *         C++
  */
 
 static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON_UNUSED struct __pyx_obj_12test_service_Test *__pyx_v_self, int __pyx_v_count) {
@@ -2754,7 +2754,7 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "test_service.pyx":12
+  /* "test_service.pyx":21
  *         cdef vector[int] c_vector
  *         cdef int i, num
  *         srand(time(NULL))             # <<<<<<<<<<<<<<
@@ -2763,7 +2763,7 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
  */
   srand(time(NULL));
 
-  /* "test_service.pyx":13
+  /* "test_service.pyx":22
  *         cdef int i, num
  *         srand(time(NULL))
  *         for i in range(count):             # <<<<<<<<<<<<<<
@@ -2775,7 +2775,7 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "test_service.pyx":14
+    /* "test_service.pyx":23
  *         srand(time(NULL))
  *         for i in range(count):
  *             num = rand() % 100             # <<<<<<<<<<<<<<
@@ -2784,7 +2784,7 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
  */
     __pyx_v_num = __Pyx_mod_long(rand(), 0x64);
 
-    /* "test_service.pyx":15
+    /* "test_service.pyx":24
  *         for i in range(count):
  *             num = rand() % 100
  *             c_vector.push_back(num)             # <<<<<<<<<<<<<<
@@ -2795,11 +2795,11 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
       __pyx_v_c_vector.push_back(__pyx_v_num);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      __PYX_ERR(0, 15, __pyx_L1_error)
+      __PYX_ERR(0, 24, __pyx_L1_error)
     }
   }
 
-  /* "test_service.pyx":16
+  /* "test_service.pyx":25
  *             num = rand() % 100
  *             c_vector.push_back(num)
  *         sort(c_vector.begin(), c_vector.end())             # <<<<<<<<<<<<<<
@@ -2810,10 +2810,10 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
     std::sort<std::vector<int> ::iterator>(__pyx_v_c_vector.begin(), __pyx_v_c_vector.end());
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 16, __pyx_L1_error)
+    __PYX_ERR(0, 25, __pyx_L1_error)
   }
 
-  /* "test_service.pyx":17
+  /* "test_service.pyx":26
  *             c_vector.push_back(num)
  *         sort(c_vector.begin(), c_vector.end())
  *         return c_vector             # <<<<<<<<<<<<<<
@@ -2823,12 +2823,12 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
   __pyx_r = __pyx_v_c_vector;
   goto __pyx_L0;
 
-  /* "test_service.pyx":9
- * cdef class Test:
+  /* "test_service.pyx":12
+ *     """
  * 
  *     cdef vector[int] cdef_list_generator(self, int count):             # <<<<<<<<<<<<<<
- *         cdef vector[int] c_vector
- *         cdef int i, num
+ *         """
+ *         C++
  */
 
   /* function exit code */
@@ -2839,12 +2839,12 @@ static std::vector<int>  __pyx_f_12test_service_4Test_cdef_list_generator(CYTHON
   return __pyx_r;
 }
 
-/* "test_service.pyx":19
+/* "test_service.pyx":28
  *         return c_vector
  * 
  *     cpdef list generate_and_sort_numbers(self, int count):             # <<<<<<<<<<<<<<
- *         c_vector = self.cdef_list_generator(count)
- *         return [c_vector[i] for i in range(c_vector.size())]
+ *         """
+ *          ,   C++
  */
 
 static PyObject *__pyx_pw_12test_service_4Test_1generate_and_sort_numbers(PyObject *__pyx_v_self, 
@@ -2882,11 +2882,11 @@ static PyObject *__pyx_f_12test_service_4Test_generate_and_sort_numbers(struct _
     if (unlikely(!__Pyx_object_dict_version_matches(((PyObject *)__pyx_v_self), __pyx_tp_dict_version, __pyx_obj_dict_version))) {
       PY_UINT64_T __pyx_typedict_guard = __Pyx_get_tp_dict_version(((PyObject *)__pyx_v_self));
       #endif
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_generate_and_sort_numbers); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_generate_and_sort_numbers); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       if (!__Pyx_IsSameCFunction(__pyx_t_1, (void*) __pyx_pw_12test_service_4Test_1generate_and_sort_numbers)) {
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_count); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_1);
         __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
@@ -2908,11 +2908,11 @@ static PyObject *__pyx_f_12test_service_4Test_generate_and_sort_numbers(struct _
           __pyx_t_2 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+          if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         }
-        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 19, __pyx_L1_error)
+        if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None) || __Pyx_RaiseUnexpectedTypeError("list", __pyx_t_2))) __PYX_ERR(0, 28, __pyx_L1_error)
         __pyx_r = ((PyObject*)__pyx_t_2);
         __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -2931,31 +2931,31 @@ static PyObject *__pyx_f_12test_service_4Test_generate_and_sort_numbers(struct _
     #endif
   }
 
-  /* "test_service.pyx":20
+  /* "test_service.pyx":35
+ *         """
  * 
- *     cpdef list generate_and_sort_numbers(self, int count):
  *         c_vector = self.cdef_list_generator(count)             # <<<<<<<<<<<<<<
  *         return [c_vector[i] for i in range(c_vector.size())]
  */
-  __pyx_t_7 = ((struct __pyx_vtabstruct_12test_service_Test *)__pyx_v_self->__pyx_vtab)->cdef_list_generator(__pyx_v_self, __pyx_v_count); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_7 = ((struct __pyx_vtabstruct_12test_service_Test *)__pyx_v_self->__pyx_vtab)->cdef_list_generator(__pyx_v_self, __pyx_v_count); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 35, __pyx_L1_error)
   __pyx_v_c_vector = __PYX_STD_MOVE_IF_SUPPORTED(__pyx_t_7);
 
-  /* "test_service.pyx":21
- *     cpdef list generate_and_sort_numbers(self, int count):
+  /* "test_service.pyx":36
+ * 
  *         c_vector = self.cdef_list_generator(count)
  *         return [c_vector[i] for i in range(c_vector.size())]             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = __pyx_v_c_vector.size();
     __pyx_t_9 = __pyx_t_8;
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_7genexpr__pyx_v_i = __pyx_t_10;
-      __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_c_vector[__pyx_7genexpr__pyx_v_i])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_c_vector[__pyx_7genexpr__pyx_v_i])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 21, __pyx_L1_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_2))) __PYX_ERR(0, 36, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
   } /* exit inner scope */
@@ -2963,12 +2963,12 @@ static PyObject *__pyx_f_12test_service_4Test_generate_and_sort_numbers(struct _
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "test_service.pyx":19
+  /* "test_service.pyx":28
  *         return c_vector
  * 
  *     cpdef list generate_and_sort_numbers(self, int count):             # <<<<<<<<<<<<<<
- *         c_vector = self.cdef_list_generator(count)
- *         return [c_vector[i] for i in range(c_vector.size())]
+ *         """
+ *          ,   C++
  */
 
   /* function exit code */
@@ -2994,7 +2994,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_12test_service_4Test_1generate_and_sort_numbers = {"generate_and_sort_numbers", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_12test_service_4Test_1generate_and_sort_numbers, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_12test_service_4Test_generate_and_sort_numbers, "\n        \320\223\320\265\320\275\320\265\321\200\320\260\321\206\320\270\321\217 \321\201\320\277\320\270\321\201\320\272\320\260, \321\201 \320\270\321\201\320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\320\275\320\270\320\265\320\274 C++\n        :param count: \320\272\320\276\320\273\320\270\321\207\320\265\321\201\321\202\320\262\320\276 \321\207\320\270\321\201\320\265\320\273\n        :return: \321\201\320\263\320\265\320\275\320\265\321\200\320\270\321\200\320\276\320\262\320\260\320\275\320\275\321\213\320\271 \321\201\320\277\320\270\321\201\320\276\320\272, \321\201 \320\270\321\201\320\277\320\276\320\273\321\214\320\267\320\276\320\262\320\260\320\275\320\270\320\265\320\274 C++\n        ");
+static PyMethodDef __pyx_mdef_12test_service_4Test_1generate_and_sort_numbers = {"generate_and_sort_numbers", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_12test_service_4Test_1generate_and_sort_numbers, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_12test_service_4Test_generate_and_sort_numbers};
 static PyObject *__pyx_pw_12test_service_4Test_1generate_and_sort_numbers(PyObject *__pyx_v_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3039,23 +3040,23 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "generate_and_sort_numbers") < 0)) __PYX_ERR(0, 19, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "generate_and_sort_numbers") < 0)) __PYX_ERR(0, 28, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
     }
-    __pyx_v_count = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_count == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 19, __pyx_L3_error)
+    __pyx_v_count = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_count == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("generate_and_sort_numbers", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 19, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("generate_and_sort_numbers", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 28, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3091,7 +3092,7 @@ static PyObject *__pyx_pf_12test_service_4Test_generate_and_sort_numbers(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_and_sort_numbers", 1);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_12test_service_4Test_generate_and_sort_numbers(__pyx_v_self, __pyx_v_count, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_12test_service_4Test_generate_and_sort_numbers(__pyx_v_self, __pyx_v_count, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -3973,6 +3974,7 @@ static PyMethodDef __pyx_methods_12test_service_Test[] = {
 #if CYTHON_USE_TYPE_SPECS
 static PyType_Slot __pyx_type_12test_service_Test_slots[] = {
   {Py_tp_dealloc, (void *)__pyx_tp_dealloc_12test_service_Test},
+  {Py_tp_doc, (void *)PyDoc_STR("\n    \320\242\320\265\321\201\321\202\320\276\320\262\321\213\320\271 \320\272\320\273\320\260\321\201\321\201, \320\264\320\273\321\217 \320\270\320\275\321\202\320\265\320\263\321\200\320\260\321\206\320\270\320\270 \321\201 C++\n    ")},
   {Py_tp_methods, (void *)__pyx_methods_12test_service_Test},
   {Py_tp_new, (void *)__pyx_tp_new_12test_service_Test},
   {0, 0},
@@ -4017,7 +4019,7 @@ static PyTypeObject __pyx_type_12test_service_Test = {
   0, /*tp_setattro*/
   0, /*tp_as_buffer*/
   Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  0, /*tp_doc*/
+  PyDoc_STR("\n    \320\242\320\265\321\201\321\202\320\276\320\262\321\213\320\271 \320\272\320\273\320\260\321\201\321\201, \320\264\320\273\321\217 \320\270\320\275\321\202\320\265\320\263\321\200\320\260\321\206\320\270\320\270 \321\201 C++\n    "), /*tp_doc*/
   0, /*tp_traverse*/
   0, /*tp_clear*/
   0, /*tp_richcompare*/
@@ -4136,7 +4138,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 13, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 22, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4158,17 +4160,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "test_service.pyx":19
+  /* "test_service.pyx":28
  *         return c_vector
  * 
  *     cpdef list generate_and_sort_numbers(self, int count):             # <<<<<<<<<<<<<<
- *         c_vector = self.cdef_list_generator(count)
- *         return [c_vector[i] for i in range(c_vector.size())]
+ *         """
+ *          ,   C++
  */
-  __pyx_tuple__3 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_count); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_count); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_test_service_pyx, __pyx_n_s_generate_and_sort_numbers, 19, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_test_service_pyx, __pyx_n_s_generate_and_sort_numbers, 28, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 28, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -4602,16 +4604,16 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "test_service.pyx":19
+  /* "test_service.pyx":28
  *         return c_vector
  * 
  *     cpdef list generate_and_sort_numbers(self, int count):             # <<<<<<<<<<<<<<
- *         c_vector = self.cdef_list_generator(count)
- *         return [c_vector[i] for i in range(c_vector.size())]
+ *         """
+ *          ,   C++
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_12test_service_4Test_1generate_and_sort_numbers, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Test_generate_and_sort_numbers, NULL, __pyx_n_s_test_service, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_12test_service_4Test_1generate_and_sort_numbers, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_Test_generate_and_sort_numbers, NULL, __pyx_n_s_test_service, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_12test_service_Test, __pyx_n_s_generate_and_sort_numbers, __pyx_t_2) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_12test_service_Test, __pyx_n_s_generate_and_sort_numbers, __pyx_t_2) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_12test_service_Test);
 
