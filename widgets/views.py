@@ -160,7 +160,7 @@ class DegWidgetViewSet(viewsets.ViewSet):
                                                       request.GET.get('date_to'),
                                                       request.GET.get('extractor_code')).to_dict())
         else:
-            widgets = DegWidget.objects(schema=schema) if schema else DegWidget.objects()
+            widgets = DegWidget.objects(schema=schema, type=DegTypes.BOARD) if schema else DegWidget.objects(type=DegTypes.BOARD)
             res = (deg_data_service.get_data(w.schema, w.alias, DegTypes.BOARD, request.GET.get('date_from'),
                                              request.GET.get('date_to'), request.GET.get('extractor_code')).to_dict()
                    for w in widgets)
